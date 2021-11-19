@@ -10,9 +10,8 @@ return function(Slim\App $app){
         $rajzfilmek = Rajzfilm::osszes();
         $kimenet = json_encode($rajzfilmek);
         
-        $response->withHeader('Content-type', 'application/json')
-        ->getBody()->write($kimenet);
-        return $response;
+        $response->getBody()->write($kimenet);
+        return $response->withHeader('Content-type', 'application/json');
     });
 
     $app->post('/rajzfilmek', function(Request $request, Response $response){
@@ -27,5 +26,16 @@ return function(Slim\App $app){
         ->withStatus(201)
         ->withHeader('Content-type', 'application/json') 
         ->getBody()->write($kimenet);
+    });
+
+    $app->delete('/rajzfilmek/{id}', 
+    function(Request $request, Response $response, array $args){
+        if(is_integer($args['id']) || $args['id'] <= 0){
+            $ki =json_encode(['error' => 'Az ID pozitív egész szám kell legyen!']);
+            $response->getBody()->write($ki);
+            return $response
+            ->withHeader('Content-type', 'application/json')
+            ->withStatus(400);
+        }
     });
 };
