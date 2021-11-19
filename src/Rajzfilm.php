@@ -2,6 +2,8 @@
 
 namespace Petrik\Rajzfilmek;
 
+use Exception;
+
 class Rajzfilm{
     public $id;
     public $cim;
@@ -28,6 +30,19 @@ class Rajzfilm{
        $this->id = $db->lastInsertId();
     }
 
+    public function torles() {
+        if($this->id === null){
+            throw new Exception("null ID-ját nem lehet törölni");
+        }
+
+        global $db;
+        $stmt = $db->prepare('DELETE FROM rajzfilmek WHERE id = :id');
+        $stmt->execute();
+        if ($stmt->rowCount() !== 1) {
+            throw new Exception("Ilyen ID-jú nem volt");
+        }
+    }
+
     public static function osszes() : array {
         global $db;
        $result = $db->query('SELECT * FROM rajzfilmek ORDER BY kiadasi_ev');
@@ -40,7 +55,7 @@ class Rajzfilm{
         return $rajzfilmek;
     }
 
-    public static function getById(int $id) : Rajzfilm{
+    public static function getById(int $id) : ?Rajzfilm{
         global $db;
         $stmt = $db->prepare('SELECT * FROM rajzfilmek WHERE id == id');
         $stmt->execute([':id' => $id]);

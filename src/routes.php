@@ -31,7 +31,7 @@ return function(Slim\App $app){
 
     $app->delete('/rajzfilmek/{id}', 
     function(Request $request, Response $response, array $args){
-        if(is_integer($args['id']) || $args['id'] <= 0){
+        if(is_numeric($args['id']) || $args['id'] <= 0){
             $ki =json_encode(['error' => 'Az ID pozitív egész szám kell legyen!']);
             $response->getBody()->write($ki);
             return $response
@@ -39,11 +39,15 @@ return function(Slim\App $app){
             ->withStatus(400);
         }
        $rajzfilm = Rajzfilm::getById($args['id']);
-       if ($rajzfilm == null) {
+       if ($rajzfilm === null) {
            $ki = json_encode(['error' => 'Nincs ilyen ID-jú rajzfilm']);
            return $response
             ->withHeader('Content-type', 'application/json')
             ->withStatus(404);
        }
+       $rajzfilm->torles();
+       return $response
+       ->withHeader('Content-type', 'application/json')
+       ->WithStatus(204);
     });
 };
