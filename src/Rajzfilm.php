@@ -37,7 +37,7 @@ class Rajzfilm{
 
         global $db;
         $stmt = $db->prepare('DELETE FROM rajzfilmek WHERE id = :id');
-        $stmt->execute();
+        $stmt->execute([':id' => $this->id]);
         if ($stmt->rowCount() !== 1) {
             throw new Exception("Ilyen ID-jú nem volt");
         }
@@ -57,7 +57,7 @@ class Rajzfilm{
 
     public static function getById(int $id) : ?Rajzfilm{
         global $db;
-        $stmt = $db->prepare('SELECT * FROM rajzfilmek WHERE id == id');
+        $stmt = $db->prepare('SELECT * FROM rajzfilmek WHERE id = :id');
         $stmt->execute([':id' => $id]);
         if ($stmt->rowCount() !== 1) {
             return null;

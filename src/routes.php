@@ -31,7 +31,7 @@ return function(Slim\App $app){
 
     $app->delete('/rajzfilmek/{id}', 
     function(Request $request, Response $response, array $args){
-        if(is_numeric($args['id']) || $args['id'] <= 0){
+        if(!is_numeric($args['id']) || $args['id'] <= 0){
             $ki =json_encode(['error' => 'Az ID pozitív egész szám kell legyen!']);
             $response->getBody()->write($ki);
             return $response
