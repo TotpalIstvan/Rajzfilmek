@@ -10,8 +10,9 @@ return function(Slim\App $app){
         $rajzfilmek = Rajzfilm::osszes();
         $kimenet = json_encode($rajzfilmek);
         
-        $response->getBody()->write($kimenet);
-        return $response->withHeader('Content-type', 'application/json');
+        
+        return $response->withHeader('Content-type', 'application/json')
+        ->getBody()->write($kimenet);
     });
 
     $app->post('/rajzfilmek', function(Request $request, Response $response){
@@ -37,5 +38,12 @@ return function(Slim\App $app){
             ->withHeader('Content-type', 'application/json')
             ->withStatus(400);
         }
+       $rajzfilm = Rajzfilm::getById($args['id']);
+       if ($rajzfilm == null) {
+           $ki = json_encode(['error' => 'Nincs ilyen ID-jú rajzfilm']);
+           return $response
+            ->withHeader('Content-type', 'application/json')
+            ->withStatus(404);
+       }
     });
 };

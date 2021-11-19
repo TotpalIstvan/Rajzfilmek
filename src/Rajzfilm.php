@@ -39,4 +39,16 @@ class Rajzfilm{
         }
         return $rajzfilmek;
     }
+
+    public static function getById(int $id) : Rajzfilm{
+        global $db;
+        $stmt = $db->prepare('SELECT * FROM rajzfilmek WHERE id == id');
+        $stmt->execute([':id' => $id]);
+        if ($stmt->rowCount() !== 1) {
+            return null;
+        }
+        $rajzfilm = new Rajzfilm();
+        $rajzfilm->setAttributes($stmt->fetch(\PDO::FETCH_ASSOC));
+        return $rajzfilm;
+    }
 }
